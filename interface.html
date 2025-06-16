@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroScan AI - Alzheimer's Detection Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brain-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        /* Main Content */
+        .main-content {
+            background: white;
+            margin: 2rem 0;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Upload Section */
+        .upload-section {
+            padding: 3rem;
+            text-align: center;
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8f0ff 100%);
+        }
+
+        .upload-section h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .upload-area {
+            border: 3px dashed #667eea;
+            border-radius: 15px;
+            padding: 3rem;
+            margin: 2rem 0;
+            background: white;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: #764ba2;
+            background: #f8f9ff;
+            transform: translateY(-2px);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .upload-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .predict-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 2rem;
+        }
+
+        .predict-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(40, 167, 69, 0.3);
+        }
+
+        /* Results Section */
+        .results-section {
+            padding: 3rem;
+            text-align: center;
+            display: none;
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8f0ff 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .result-positive {
+            border-left-color: #dc3545;
+            background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
+        }
+
+        .result-negative {
+            border-left-color: #28a745;
+            background: linear-gradient(135deg, #f8fff8 0%, #e8ffe8 100%);
+        }
+
+        /* Team Section */
+        .team-section {
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8f0ff 100%);
+            padding: 4rem 0;
+        }
+
+        .team-section h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #333;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 0 2rem;
+        }
+
+        .team-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .team-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .team-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            font-weight: bold;
+        }
+
+        .team-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .team-card .role {
+            color: #667eea;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .team-card .bio {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Features Section */
+        .features-section {
+            padding: 4rem 0;
+            background: white;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: 2rem;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #f8f9ff 0%, #e8f0ff 100%);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        /* Footer */
+        footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .upload-area {
+                padding: 2rem;
+            }
+
+            .team-grid {
+                grid-template-columns: 1fr;
+                padding: 0 1rem;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="container">
+            <div class="logo">
+                <div class="brain-icon">🧠</div>
+                NeuroScan AI
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#scan">Scan</a></li>
+                <li><a href="#team">Team</a></li>
+                <li><a href="#about">About</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <h1>Advanced Alzheimer's Detection</h1>
+            <p>Cutting-edge AI technology for early dementia screening through brain imaging analysis</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="main-content">
+            <!-- Upload Section -->
+            <section id="scan" class="upload-section">
+                <h2>Upload Brain Scan for Analysis</h2>
+                <p>Upload an MRI or CT scan image for AI-powered dementia detection</p>
+                
+                <form method="post" enctype="multipart/form-data" id="uploadForm">
+                    <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                        <div class="upload-icon">📁</div>
+                        <h3>Click to select brain scan image</h3>
+                        <p>Supports JPG, PNG, DICOM formats</p>
+                        <input type="file" id="fileInput" name="file" class="file-input" accept="image/*" required>
+                    </div>
+                    <div id="fileName" style="margin: 1rem 0; font-weight: bold; color: #667eea;"></div>
+                    <button type="submit" class="predict-btn">🔍 Analyze Scan</button>
+                </form>
+
+                <!-- Loading Animation -->
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Analyzing brain scan with AI...</p>
+                </div>
+
+                <!-- Results Section -->
+                <div class="results-section" id="results">
+                    <div class="result-card" id="resultCard">
+                        <h3>Analysis Results</h3>
+                        <div id="predictionResult"></div>
+                        <p style="margin-top: 1rem; font-size: 0.9rem; color: #666;">
+                            <strong>Disclaimer:</strong> This is an AI-assisted screening tool and should not replace professional medical diagnosis.
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Features Section -->
+        <section class="features-section">
+            <div class="container">
+                <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 3rem;">Why Choose NeuroScan AI?</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🎯</div>
+                        <h3>High Accuracy</h3>
+                        <p>Advanced deep learning models trained on thousands of brain scans</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⚡</div>
+                        <h3>Fast Results</h3>
+                        <p>Get analysis results in seconds, not hours or days</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔒</div>
+                        <h3>Secure & Private</h3>
+                        <p>Your medical data is processed securely and never stored</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">👨‍⚕️</div>
+                        <h3>Medical Grade</h3>
+                        <p>Developed in collaboration with neurologists and radiologists</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Team Section -->
+    <section id="team" class="team-section">
+        <div class="container">
+            <h2>Meet Our Expert Team</h2>
+            <div class="team-grid">
+                <div class="team-card">
+                    <div class="team-avatar">DR</div>
+                    <h3>Dr. Sarah Chen</h3>
+                    <div class="role">Lead Neurologist</div>
+                    <p class="bio">15+ years in neurology with specialization in dementia research. Published 50+ papers on Alzheimer's disease and neuroimaging.</p>
+                </div>
+                
+                <div class="team-card">
+                    <div class="team-avatar">AI</div>
+                    <h3>Alex Rodriguez</h3>
+                    <div class="role">AI Research Director</div>
+                    <p class="bio">Machine Learning expert with PhD in Computer Vision. Former Google Brain researcher specializing in medical AI applications.</p>
+                </div>
+                
+                <div class="team-card">
+                    <div class="team-avatar">MJ</div>
+                    <h3>Dr. Michael Johnson</h3>
+                    <div class="role">Chief Radiologist</div>
+                    <p class="bio">Board-certified radiologist with 20+ years of experience in neuroimaging and brain scan interpretation.</p>
+                </div>
+                
+                <div class="team-card">
+                    <div class="team-avatar">LP</div>
+                    <h3>Lisa Park</h3>
+                    <div class="role">Data Science Lead</div>
+                    <p class="bio">Expert in medical data analysis and biostatistics. PhD in Biomedical Engineering with focus on brain imaging analytics.</p>
+                </div>
+                
+                <div class="team-card">
+                    <div class="team-avatar">RT</div>
+                    <h3>Robert Thompson</h3>
+                    <div class="role">Software Architect</div>
+                    <p class="bio">Full-stack developer with expertise in healthcare technology. Ensures platform security and HIPAA compliance.</p>
+                </div>
+                
+                <div class="team-card">
+                    <div class="team-avatar">NK</div>
+                    <h3>Dr. Nina Kumar</h3>
+                    <div class="role">Clinical Research Coordinator</div>
+                    <p class="bio">Coordinates clinical trials and validation studies. Ensures ethical standards and regulatory compliance in research.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 NeuroScan AI. Advancing healthcare through artificial intelligence.</p>
+            <p style="margin-top: 0.5rem; font-size: 0.9rem; opacity: 0.8;">
+                This tool is for research and screening purposes only. Always consult with healthcare professionals for medical diagnosis.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // File input handling
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const fileName = e.target.files[0] ? e.target.files[0].name : '';
+            document.getElementById('fileName').textContent = fileName ? `Selected: ${fileName}` : '';
+        });
+
+        // Form submission handling
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const fileInput = document.getElementById('fileInput');
+            if (!fileInput.files[0]) {
+                alert('Please select a brain scan image first.');
+                return;
+            }
+
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+
+            // Create FormData and submit
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+
+            fetch('/', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(html => {
+                // Parse the response to extract prediction
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const predictionElement = doc.querySelector('h2');
+                
+                if (predictionElement && predictionElement.textContent.includes('Prediction:')) {
+                    const prediction = predictionElement.textContent.replace('Prediction: ', '');
+                    showResults(prediction);
+                } else {
+                    document.getElementById('loading').style.display = 'none';
+                    alert('Error processing the image. Please try again.');
+                }
+            })
+            .catch(error => {
+                document.getElementById('loading').style.display = 'none';
+                alert('Error: ' + error.message);
+            });
+        });
+
+        function showResults(prediction) {
+            document.getElementById('loading').style.display = 'none';
+            
+            const resultCard = document.getElementById('resultCard');
+            const predictionResult = document.getElementById('predictionResult');
+            
+            if (prediction === 'Demented') {
+                resultCard.className = 'result-card result-positive';
+                predictionResult.innerHTML = `
+                    <h3 style="color: #dc3545; font-size: 1.5rem; margin-bottom: 1rem;">⚠️ Potential Dementia Detected</h3>
+                    <p style="font-size: 1.1rem;">The AI analysis suggests signs consistent with dementia. Please consult with a neurologist for comprehensive evaluation.</p>
+                `;
+            } else {
+                resultCard.className = 'result-card result-negative';
+                predictionResult.innerHTML = `
+                    <h3 style="color: #28a745; font-size: 1.5rem; margin-bottom: 1rem;">✅ No Dementia Detected</h3>
+                    <p style="font-size: 1.1rem;">The AI analysis shows no signs of dementia in this brain scan. Continue regular health monitoring as recommended by your physician.</p>
+                `;
+            }
+            
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
